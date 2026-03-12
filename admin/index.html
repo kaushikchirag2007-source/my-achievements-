@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Private</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: #0a0a0c;
+            padding: 40px;
+        }
+
+        .admin-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .setup-screen {
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .dashboard {
+            display: none;
+        }
+
+        .admin-card {
+            margin-bottom: 30px;
+            border: 1px solid var(--primary-color);
+        }
+
+        .status-bar {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .status-online {
+            background: rgba(52, 199, 89, 0.1);
+            color: #34c759;
+        }
+
+        .status-offline {
+            background: rgba(255, 59, 48, 0.1);
+            color: #ff3b30;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cursor-follow"></div>
+
+    <div class="admin-container">
+        <!-- Setup / Login -->
+        <div id="setup-screen" class="setup-screen glass scroll-reveal">
+            <h1 class="text-gradient">Admin Login</h1>
+            <p>Enter your GitHub Personal Access Token to manage your portfolio.</p>
+            <div class="form-group" style="max-width: 400px; margin: 30px auto;">
+                <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx">
+                <button id="btn-login" class="btn-primary" style="margin-top: 20px;">Connect GitHub</button>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-muted);">Your token is never stored on any server; it stays
+                in your browser's session.</p>
+        </div>
+
+        <!-- Main Dashboard -->
+        <div id="dashboard" class="dashboard">
+            <div class="admin-header">
+                <h1 class="text-gradient">Portfolio Admin</h1>
+                <div id="connection-status" class="status-bar status-online">Connected to GitHub</div>
+            </div>
+
+            <div class="admin-tabs">
+                <button class="tab-btn active" data-tab="tab-skills">Skills</button>
+                <button class="tab-btn" data-tab="tab-achievements">Achievements</button>
+                <button class="tab-btn" data-tab="tab-logs">Private Logs</button>
+            </div>
+
+            <!-- Skills Tab -->
+            <div class="tab-content active" id="tab-skills">
+                <div class="admin-card glass">
+                    <form id="skill-form" class="admin-form">
+                        <div class="form-row">
+                            <input type="text" id="skill-name" placeholder="Skill Name" required>
+                            <input type="text" id="skill-icon" placeholder="Icon (e.g., fab fa-react)" required>
+                        </div>
+                        <input type="text" id="skill-category" placeholder="Category" required style="width: 100%; margin: 15px 0;">
+                        <button type="submit" class="btn-primary">Push New Skill</button>
+                    </form>
+                </div>
+                <div id="skills-list" class="admin-list"></div>
+            </div>
+
+            <!-- Achievements Tab -->
+            <div class="tab-content" id="tab-achievements">
+                <div class="admin-card glass">
+                    <form id="ach-form" class="admin-form">
+                        <div class="form-row">
+                            <input type="text" id="ach-title" placeholder="Title" required>
+                            <input type="text" id="ach-date" placeholder="Date" required>
+                        </div>
+                        <textarea id="ach-desc" placeholder="Description" rows="3" required style="width: 100%; margin: 15px 0; background:rgba(255,255,255,0.05); border:1px solid var(--glass-border); border-radius:8px; color:white; padding:10px;"></textarea>
+                        <button type="submit" class="btn-primary">Push New Achievement</button>
+                    </form>
+                </div>
+                <div id="ach-list" class="admin-list"></div>
+            </div>
+
+            <!-- Logs Tab -->
+            <div class="tab-content" id="tab-logs">
+                <div class="admin-card glass" style="padding: 20px;">
+                    <h3>Visitor Activity</h3>
+                    <table class="logs-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Info</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logs-body">
+                            <tr>
+                                <td colspan="2">Fetching logs from Supabase...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+    <script>
+        // Tab logic
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn, .tab-content').forEach(el => el.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Cursor
+        const cursor = document.querySelector('.cursor-follow');
+        document.addEventListener('mousemove', (e) => {
+            if (cursor) {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            }
+        });
+    </script>
+</body>
+</html>
